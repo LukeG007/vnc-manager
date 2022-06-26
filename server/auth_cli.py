@@ -39,3 +39,4 @@ class AuthenticationManagement:
         )
         hashed_passwd = salt + key
         cur.execute('INSERT INTO users VALUES(null, "{}", "{}")'.format(username, hashed_passwd))
+        cur.close()
