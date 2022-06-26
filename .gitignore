@@ -1,1 +1,3 @@
 /server/auth.sqlite
+/server/__pycache
+/client/__pycache
