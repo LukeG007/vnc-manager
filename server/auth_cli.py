@@ -8,7 +8,7 @@ class AuthenticationManagement:
         self.db_name = 'auth.sqlite'
         self.db = sqlite3.connect(self.db_name)
         cur = self.db.cursor()
-        cur.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, key TEXT)')
+        cur.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, key TEXT, permissions INTEGER)')
         cur.close()
     def auth(self, username, passwd):
         cur = self.db.cursor()
@@ -29,8 +29,8 @@ class AuthenticationManagement:
                 )
                 if new_key == key:
                     authenticated = True
-        return authenticated
-    def add_user(self, username, passwd):
+        return authenticated, user[2]
+    def add_user(self, username, passwd, permissions):
         cur = self.db.cursor()
         salt = os.urandom(32)
         key = hashlib.pbkdf2_hmac(
@@ -40,6 +40,6 @@ class AuthenticationManagement:
             100000
         )
         hashed_passwd = codecs.encode(salt + key, 'hex_codec').decode('utf-8')
-        cur.execute('INSERT INTO users VALUES(null, "{}", "{}")'.format(username, hashed_passwd))
+        cur.execute('INSERT INTO users VALUES(null, "{}", "{}", {})'.format(username, hashed_passwd, permissions))
         cur.close()
         self.db.commit()
