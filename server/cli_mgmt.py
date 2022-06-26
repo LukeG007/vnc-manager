@@ -9,7 +9,8 @@ class CLI:
             'user_details': {'usage': 'Get user info', 'callback': self.user_details, 'permission_required': 0}
         }
         if not extra_cmds is None:
-            self.cmd_callbacks = self.cmd_callbacks + extra_cmds
+            for cmd in extra_cmds:
+                self.cmd_callbacks[cmd] = extra_cmds[cmd]
     def user_details(self, args):
         username = args[1]
         user, permissions = self.auth.get_user_details(username)
