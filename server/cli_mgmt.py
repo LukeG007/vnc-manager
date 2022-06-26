@@ -11,7 +11,7 @@ class CLI:
     def user_details(self, args):
         username = args[1]
         user, permissions = self.auth.get_user_details(username)
-        return 'Username: {}\nPermissions: {}'.format(user, permissions)
+        return 'Username: {}\nPermissions: {} ({})'.format(user, permissions, self.parse_permission_int(permissions))
     def help(self, args):
         help_msg = 'Command\tDescription\tPermission Required\n'
         x = 1
