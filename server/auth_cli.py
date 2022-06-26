@@ -6,6 +6,9 @@ class AuthenticationManagement:
     def __init__(self):
         self.db_name = 'auth.sqlite'
         self.db = sqlite3.connect(self.db_name)
+        cur = self.db.cursor()
+        cur.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, key TEXT)')
+        cur.close()
     def auth(self, username, passwd):
         cur = self.db.cursor()
         cur.execute('SELECT * FROM users')
@@ -31,6 +34,7 @@ class AuthenticationManagement:
         key = hashlib.pbkdf2_hmac(
             'sha256',
             passwd.encode('utf-8'),
+            salt,
             100000
         )
         hashed_passwd = salt + key
