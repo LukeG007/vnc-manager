@@ -16,6 +16,6 @@ class CLI:
         return help_msg
     def process_cmd(self, cmd, username, passwd):
         if self.auth.auth(username, passwd):
-            self.cmd_callbacks[cmd]['callback']()
+            return self.cmd_callbacks[cmd]['callback']()
         else:
             return 'Invalid Credentials'
