@@ -5,7 +5,7 @@ class CLI:
     def __init__(self):
         self.auth = auth_cli.AuthenticationManagement()
         self.cmd_callbacks = {
-            'help': {'usage': 'Display CMD', 'callback': self.help, 'permission_required': 0}
+            'help': {'usage': 'Display CMDs', 'callback': self.help, 'permission_required': 0}
         }
     def help(self):
         help_msg = 'Command\tDescription\tPermission Required\n'
