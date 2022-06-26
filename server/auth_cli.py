@@ -38,7 +38,7 @@ class AuthenticationManagement:
         permissions = 0
         for user in users:
             if user[1] == username:
-                permissions = user[2]
+                permissions = user[3]
         return username, permissions
     def add_user(self, username, passwd, permissions):
         cur = self.db.cursor()
