@@ -5,7 +5,7 @@ import os
 class AuthenticationManagement:
     def __init__(self):
         self.db_name = 'auth.sqlite'
-        self.db = sqlite3.open(self.db_name)
+        self.db = sqlite3.connect(self.db_name)
     def auth(self, username, passwd):
         cur = self.db.cursor()
         cur.execute('SELECT * FROM users')
