@@ -1,6 +1,7 @@
 import hashlib
 import sqlite3
 import os
+import codecs
 
 class AuthenticationManagement:
     def __init__(self):
@@ -17,8 +18,9 @@ class AuthenticationManagement:
         authenticated = False
         for user in users:
             if user[1] == username:
-                salt = user[2][:32]
-                key = user[2][32:]
+                hex_decoded = codecs.decode(user[2], 'hex_codec').encode()
+                salt = hex_decoded[:32]
+                key = hex_decoded[32:]
                 new_key = hashlib.pbkdf2_hmac(
                     'sha256',
                     passwd.encode('utf-8'),
@@ -37,6 +39,7 @@ class AuthenticationManagement:
             salt,
             100000
         )
-        hashed_passwd = salt + key
+        hashed_passwd = codecs.encode(salt + key, 'hex_codec')
         cur.execute('INSERT INTO users VALUES(null, "{}", "{}")'.format(username, hashed_passwd))
         cur.close()
+        self.db.commit()
