@@ -18,7 +18,7 @@ class AuthenticationManagement:
         authenticated = False
         for user in users:
             if user[1] == username:
-                hex_decoded = codecs.decode(user[2], 'hex_codec').encode()
+                hex_decoded = codecs.decode(user[2], 'hex_codec')
                 salt = hex_decoded[:32]
                 key = hex_decoded[32:]
                 new_key = hashlib.pbkdf2_hmac(
@@ -39,7 +39,7 @@ class AuthenticationManagement:
             salt,
             100000
         )
-        hashed_passwd = codecs.encode(salt + key, 'hex_codec')
+        hashed_passwd = codecs.encode(salt + key, 'hex_codec').decode('utf-8')
         cur.execute('INSERT INTO users VALUES(null, "{}", "{}")'.format(username, hashed_passwd))
         cur.close()
         self.db.commit()
