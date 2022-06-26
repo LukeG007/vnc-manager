@@ -33,9 +33,12 @@ class CLI:
         if permission == 3:
             return 'Owner'
     def process_cmd(self, cmd, username, passwd):
-        auth, permission = self.auth.auth(username, passwd)
+        auth = self.auth.auth(username, passwd)
+        if not auth == False:
+            permissions = auth
+            auth = True
         args = cmd.split(' ')
-        if auth and self.cmd_callbacks[args[0]]['permission_required'] <= permission:
+        if auth and self.cmd_callbacks[args[0]]['permission_required'] <= permissions:
             return self.cmd_callbacks[args[0]]['callback'](args)
         else:
             return 'Invalid Credentials'
