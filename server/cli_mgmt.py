@@ -2,12 +2,14 @@ import sqlite3
 import auth_cli
 
 class CLI:
-    def __init__(self):
+    def __init__(self, extra_cmds=None):
         self.auth = auth_cli.AuthenticationManagement()
         self.cmd_callbacks = {
             'help': {'usage': 'Display CMDs', 'callback': self.help, 'permission_required': 0},
             'user_details': {'usage': 'Get user info', 'callback': self.user_details, 'permission_required': 0}
         }
+        if not extra_cmds is None:
+            self.cmd_callbacks = self.cmd_callbacks + extra_cmds
     def user_details(self, args):
         username = args[1]
         user, permissions = self.auth.get_user_details(username)
