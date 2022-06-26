@@ -30,6 +30,16 @@ class AuthenticationManagement:
                 if new_key == key:
                     authenticated = True
         return authenticated, user[2]
+    def get_user_details(self, username):
+        cur = self.db.cursor()
+        cur.execute('SELECT * FROM users')
+        users = cur.fetchall()
+        cur.close()
+        permissions = 0
+        for user in users:
+            if user[1] == username:
+                permissions = user[2]
+        return username, permissions
     def add_user(self, username, passwd, permissions):
         cur = self.db.cursor()
         salt = os.urandom(32)
