@@ -28,7 +28,7 @@ class AuthenticationManagement:
                     100000
                 )
                 if new_key == key:
-                    authenticated = int(user[2])
+                    authenticated = int(user[3])
         return authenticated
     def get_user_details(self, username):
         cur = self.db.cursor()
