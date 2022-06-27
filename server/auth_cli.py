@@ -36,10 +36,12 @@ class AuthenticationManagement:
         users = cur.fetchall()
         cur.close()
         permissions = 0
+        user_found = False
         for user in users:
             if user[1] == username:
                 permissions = user[3]
-        return username, permissions
+                user_found = True
+        return username, permissions, user_found
     def add_user(self, username, passwd, permissions):
         cur = self.db.cursor()
         salt = os.urandom(32)

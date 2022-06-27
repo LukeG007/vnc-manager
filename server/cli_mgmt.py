@@ -13,7 +13,9 @@ class CLI:
                 self.cmd_callbacks[cmd] = extra_cmds[cmd]
     def user_details(self, args):
         username = args[1]
-        user, permissions = self.auth.get_user_details(username)
+        user, permissions, user_found = self.auth.get_user_details(username)
+        if not user_found:
+            return 'No user with that username was found'
         return 'Username: {}\nPermissions: {} ({})'.format(user, permissions, self.parse_permission_int(permissions))
     def help(self, args):
         help_msg = 'Command\tDescription\tPermission Required\n'
