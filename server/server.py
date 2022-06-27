@@ -10,7 +10,7 @@ client_list = {}
 
 @app.route('/add/<string:hostname>')
 def add(hostname):
-    mgmt_id = uuid.uuid4()
+    mgmt_id = str(uuid.uuid4())
     global client_list
     client_list[request.remote_addr] = {'hostname': hostname, 'mgmt_id': mgmt_id}
     return mgmt_id
