@@ -1,3 +1,4 @@
+from tabulate import tabulate
 import sqlite3
 import auth_cli
 
@@ -12,7 +13,7 @@ class CLI:
             for cmd in extra_cmds:
                 self.cmd_callbacks[cmd] = extra_cmds[cmd]
     def validate_cmd(self, args, amount_expected):
-        return len(args) == amount_expected  
+        return len(args) == amount_expected
     def user_details(self, args):
         username = args[1]
         user, permissions, user_found = self.auth.get_user_details(username)
@@ -20,16 +21,13 @@ class CLI:
             return 'No user with that username was found'
         return 'Username: {}\nPermissions: {} ({})'.format(user, permissions, self.parse_permission_int(permissions))
     def help(self, args):
-        help_msg = 'Command\tUsage\tDescription\tPermission Required\n'
-        x = 1
+        tab_headers = ['Command', 'Usage', 'Description', 'Permission Required']
+        tab_data = []
         for cmd in self.cmd_callbacks:
             usage = self.cmd_callbacks[cmd]['usage']
             desc = self.cmd_callbacks[cmd]['desc']
-            if not x == len(self.cmd_callbacks):
-                help_msg += cmd + '\t' + usage + '\t' + desc + '\t' + self.parse_permission_int(self.cmd_callbacks[cmd]['permission_required']) + '\n'
-            else:
-                help_msg += cmd + '\t' + usage + '\t' + desc + '\t' + self.parse_permission_int(self.cmd_callbacks[cmd]['permission_required'])
-            x += 1
+            tab_data.append([cmd, usage, desc, self.parse_permission_int(self.cmd_callbacks[cmd]['permission_required'])])
+        help_msg = tabulate(tab_data, headers=tab_headers)
         return help_msg
     def parse_permission_int(self, permission):
         if permission == 0:
