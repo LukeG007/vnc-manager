@@ -41,6 +41,8 @@ class CLI:
             permissions = auth
             auth = True
         args = cmd.split(' ')
+        if not args[0] in self.cmd_callbacks:
+            return 'Command not found'
         if auth and self.cmd_callbacks[args[0]]['permission_required'] <= permissions:
             return self.cmd_callbacks[args[0]]['callback'](args)
         else:
