@@ -5,12 +5,14 @@ class CLI:
     def __init__(self, extra_cmds=None):
         self.auth = auth_cli.AuthenticationManagement()
         self.cmd_callbacks = {
-            'help': {'usage': 'Display CMDs', 'callback': self.help, 'permission_required': 0},
-            'user_details': {'usage': 'Get user info', 'callback': self.user_details, 'permission_required': 0}
+            'help': {'usage': 'Display CMDs', 'callback': self.help, 'permission_required': 0, 'expected_arg_amount': 1},
+            'user_details': {'usage': 'Get user info', 'callback': self.user_details, 'permission_required': 0, 'expected_arg_amount': 2}
         }
         if not extra_cmds is None:
             for cmd in extra_cmds:
                 self.cmd_callbacks[cmd] = extra_cmds[cmd]
+    def validate_cmd(self, args, amount_expected):
+        return len(args) == amount_expected  
     def user_details(self, args):
         username = args[1]
         user, permissions, user_found = self.auth.get_user_details(username)
@@ -45,6 +47,8 @@ class CLI:
         args = cmd.split(' ')
         if not args[0] in self.cmd_callbacks:
             return 'Command not found'
+        if not self.validate_cmd(args, self.cmd_callbacks[args[0]]['expected_arg_amount']):
+            return 'Invalid Command'
         if auth and self.cmd_callbacks[args[0]]['permission_required'] <= permissions:
             return self.cmd_callbacks[args[0]]['callback'](args)
         else:
