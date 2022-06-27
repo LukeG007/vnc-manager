@@ -1,5 +1,4 @@
 from tabulate import tabulate
-import sqlite3
 import auth_cli
 
 class CLI:
