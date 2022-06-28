@@ -3,10 +3,16 @@ import uuid
 import json
 import threading
 import cli_session_mgmt
+import vnc_mgmt
+import auth_cli
+import sqlite3
+import os
 import socket
 
 app = Flask(__name__)
 client_list = {}
+auth = auth_cli.AuthenticationManagement()
+vnc_sys = vnc_mgmt.VNCManagement(auth)
 
 @app.route('/add/<string:hostname>')
 def add(hostname):
@@ -19,6 +25,14 @@ def add(hostname):
 def list_clients():
     clients = json.dumps(client_list)
     return clients
+
+@app.route('/create_vnc_server', methods=['POST'])
+def create_vnc_server():
+    vnc_data = dict(request.form)
+    return vnc_sys.create_vnc_server(vnc_data['user'], vnc_data['passwd'], vnc_data['port'])
+
+def update_vnc_list_file(servers):
+    serverlistf = open()
 
 def manage_cli_session(conn):
     try:

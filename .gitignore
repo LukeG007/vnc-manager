@@ -1,4 +1,4 @@
-/server/auth.sqlite
+/server/data.sqlite
 /server/__pycache__
 /client/__pycache__
 /client/server_ip.conf
