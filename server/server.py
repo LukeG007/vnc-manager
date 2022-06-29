@@ -23,14 +23,6 @@ def list_clients():
     clients = json.dumps(client_sys.client_list)
     return clients
 
-@app.route('/create_vnc_server', methods=['POST'])
-def create_vnc_server():
-    vnc_data = dict(request.form)
-    return vnc_sys.create_vnc_server(vnc_data['user'], vnc_data['passwd'], vnc_data['port'])
-
-def update_vnc_list_file(servers):
-    serverlistf = open()
-
 def manage_cli_session(conn):
     try:
         authentication = conn.recv(1024).decode('utf-8').split(':')
