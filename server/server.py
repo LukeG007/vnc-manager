@@ -1,29 +1,26 @@
 from flask import Flask, request
-import uuid
 import json
 import threading
 import cli_session_mgmt
 import vnc_mgmt
 import auth_cli
 import sqlite3
+import client_mgmt
 import os
 import socket
 
 app = Flask(__name__)
-client_list = {}
+client_sys = client_mgmt.ClientManagement()
 auth = auth_cli.AuthenticationManagement()
-vnc_sys = vnc_mgmt.VNCManagement(auth)
+vnc_sys = vnc_mgmt.VNCManagement(auth, client_sys)
 
 @app.route('/add/<string:hostname>')
 def add(hostname):
-    mgmt_id = str(uuid.uuid4()).split('-')[0]
-    global client_list
-    client_list[request.remote_addr] = {'hostname': hostname, 'mgmt_id': mgmt_id}
-    return mgmt_id
+    return client_sys.add_client(hostname, request.remote_addr)
 
 @app.route('/list_clients')
 def list_clients():
-    clients = json.dumps(client_list)
+    clients = json.dumps(client_sys.client_list)
     return clients
 
 @app.route('/create_vnc_server', methods=['POST'])
