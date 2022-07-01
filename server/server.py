@@ -23,6 +23,11 @@ def list_clients():
     clients = json.dumps(client_sys.client_list)
     return clients
 
+@app.route('/auth', methods=['POST'])
+def authenticate():
+    auth_key = dict(request.form)['auth'].split(':')
+    auth.auth(auth_key[0], auth_key[1])
+
 def manage_cli_session(conn):
     try:
         authentication = conn.recv(1024).decode('utf-8').split(':')
