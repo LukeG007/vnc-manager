@@ -8,7 +8,6 @@ class CLI:
         self.cmd_callbacks = {
             'help': {'usage': 'help', 'desc': 'Display CMDs', 'callback': self.help, 'permission_required': 0, 'expected_arg_amount': 1},
             'user_details': {'usage': 'user_details <user>', 'desc': 'Get user info', 'callback': self.user_details, 'permission_required': 0, 'expected_arg_amount': 2},
-            
         }
         if not extra_cmds is None:
             for cmd in extra_cmds:
