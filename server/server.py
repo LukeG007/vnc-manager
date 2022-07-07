@@ -39,7 +39,7 @@ def manage_cli_session(conn):
         print('Connection to client lost, closing thread')
     else:
         if not authentication == '':
-            session = cli_session_mgmt.CLISessionManagement(authentication[0], authentication[1])
+            session = cli_session_mgmt.CLISessionManagement(authentication[0], authentication[1], vnc_sys)
             while True:
                 try:
                     cmd = conn.recv(1024).decode('utf-8')
