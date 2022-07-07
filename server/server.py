@@ -33,27 +33,37 @@ def authenticate():
     return str(auth.auth(auth_key[0], auth_key[1]))
 
 def manage_cli_session(conn):
-    try:
-        authentication = conn.recv(1024).decode('utf-8').split(':')
-    except ConnectionResetError:
-        print('Connection to client lost, closing thread')
-    else:
-        if not authentication == '':
-            session = cli_session_mgmt.CLISessionManagement(authentication[0], authentication[1], vnc_sys)
-            while True:
-                try:
-                    cmd = conn.recv(1024).decode('utf-8')
-                    if cmd == 'exit':
-                        conn.close()
-                        break
-                    else:
-                        resp = session.execute(cmd)
-                        conn.send(resp.encode())
-                except ConnectionResetError:
-                    print('Connection to client lost, closing thread')
-                    break
-        else:
+    invalid_credentials = True
+    run_cli = True
+    while invalid_credentials:
+        try:
+            authentication = conn.recv(1024).decode('utf-8').split(':')
+        except ConnectionResetError:
             print('Connection to client lost, closing thread')
+        else:
+            if not authentication == '':
+                if auth.auth(authentication[0], authentication[1]):
+                    conn.send(b'auth')
+                    invalid_credentials = False
+                else:
+                    conn.send(b'noauth')
+            else:
+                conn.close()
+                run_cli = False
+    if run_cli:
+        session = cli_session_mgmt.CLISessionManagement(authentication[0], authentication[1], vnc_sys)
+        while True:
+            try:
+                cmd = conn.recv(1024).decode('utf-8')
+                if cmd == 'exit':
+                    conn.close()
+                    break
+                else:
+                    resp = session.execute(cmd)
+                    conn.send(resp.encode())
+            except ConnectionResetError:
+                print('Connection to client lost, closing thread')
+                break
 
 def start_cli_mgmt():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

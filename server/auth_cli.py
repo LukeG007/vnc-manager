@@ -10,11 +10,14 @@ class AuthenticationManagement:
         cur = self.db.cursor()
         cur.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, key TEXT, permissions INTEGER)')
         cur.close()
+        self.db.close()
     def auth(self, username, passwd):
+        self.db = sqlite3.connect(self.db_name)
         cur = self.db.cursor()
         cur.execute('SELECT * FROM users')
         users = cur.fetchall()
         cur.close()
+        self.db.close()
         authenticated = False
         for user in users:
             if user[1] == username:
@@ -26,10 +29,12 @@ class AuthenticationManagement:
                     authenticated = int(user[3])
         return authenticated
     def get_user_details(self, username):
+        self.db = sqlite3.connect(self.db_name)
         cur = self.db.cursor()
         cur.execute('SELECT * FROM users')
         users = cur.fetchall()
         cur.close()
+        self.db.close()
         permissions = 0
         user_found = False
         for user in users:
@@ -46,9 +51,11 @@ class AuthenticationManagement:
         )
         return key
     def add_user(self, username, passwd, permissions):
+        self.db = sqlite3.connect(self.db_name)
         cur = self.db.cursor()
         salt = os.urandom(32)
         hashed_passwd = self.get_hash(passwd, salt)
         cur.execute('INSERT INTO users VALUES(null, "{}", "{}", {})'.format(username, hashed_passwd, permissions))
         cur.close()
         self.db.commit()
+        self.db.close()
