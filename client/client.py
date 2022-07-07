@@ -14,4 +14,4 @@ else:
 
     r = requests.get('http://{}:4583/add/{}'.format(server_ip, hostname))
 
-    api_endpoint.run_server()
+    api_endpoint.run_server(server_ip)

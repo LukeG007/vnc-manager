@@ -18,6 +18,10 @@ vnc_sys = vnc_mgmt.VNCManagement(auth, client_sys)
 def add(hostname):
     return client_sys.add_client(hostname, request.remote_addr)
 
+@app.route('/vnc_data')
+def vnc_data():
+    return json.dumps(vnc_sys.get_vnc_data())
+
 @app.route('/list_clients')
 def list_clients():
     clients = json.dumps(client_sys.client_list)
@@ -26,7 +30,7 @@ def list_clients():
 @app.route('/auth', methods=['POST'])
 def authenticate():
     auth_key = dict(request.form)['auth'].split(':')
-    auth.auth(auth_key[0], auth_key[1])
+    return str(auth.auth(auth_key[0], auth_key[1]))
 
 def manage_cli_session(conn):
     try:

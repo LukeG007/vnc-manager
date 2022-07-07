@@ -13,6 +13,5 @@ class CLISessionManagement:
     def create_vnc(self, args):
         port = args[1]
         self.cli.vnc_sys.create_vnc_server(self.username, self.password, port)
-        
     def execute(self, cmd):
         return self.cli.process_cmd(cmd, self.username, self.password)

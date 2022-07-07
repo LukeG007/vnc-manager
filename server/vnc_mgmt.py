@@ -1,4 +1,5 @@
 import sqlite3
+import requests
 
 class VNCManagement:
     def __init__(self, auth, client_sys):
@@ -9,6 +10,39 @@ class VNCManagement:
         cur = self.db.cursor()
         cur.execute('CREATE TABLE IF NOT EXISTS vnc_servers(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, port INTEGER, server TEXT)')
         cur.close()
+    def start_vnc_server(self, port, username, passwd):
+        authenticated = self.auth.auth(username, passwd)
+        if not authenticated == False:
+            permissions = authenticated
+            cur = self.db.cursor()
+            try:
+                cur.execute('SELECT * FROM vnc_servers WHERE port={}'.format(port))
+            except sqlite3.Error:
+                cur.close()
+                return ['notfound', 1]
+            server_entry = cur.fetchall()[0]
+            if not server_entry[1] == username and permissions == 0:
+                cur.close()
+                return ['unprivileged', 1]
+            cur.close()
+            self.client_sys.send_start_cmd(server_entry[3], username+':'+passwd, port)
+            return ['ok', 0]
+        else:
+            cur.close()
+            return ['noauth', 1]
+    def get_vnc_data(self):
+        cur = self.db.cursor()
+        cur.execute('SELECT username, port, server FROM vnc_servers')
+        data = cur.fetchall()
+        vnc_data = {}
+        for entry in data:
+            entry_data = {}
+            entry_data['username'] = entry[0]
+            entry_data['server'] = entry[2]
+            vnc_data[entry[1]] = entry_data
+        
+        return vnc_data
+
     def create_vnc_server(self, username, passwd, port, server=None):
         cur = self.db.cursor()
         cur.execute('SELECT * FROM vnc_servers')
@@ -29,14 +63,15 @@ class VNCManagement:
                         if lowest_load_server == None:
                             lowest_load_server = client
                         else:
-                            if lowest_load_server['vnc_server_amount'] > client['vnc_server_amount']:
+                            if self.client_sys.client_list[lowest_load_server['vnc_server_amount']] > self.client_sys.client_list[client['vnc_server_amount']]:
                                 lowest_load_server = client
-                    server = lowest_load_server['vnc_server_amount']
+                    server = lowest_load_server
                 
                 cur.execute('INSERT INTO vnc_servers VALUES(null, "{}", "{}", "{}")'.format(username, port, server))
                 cur.close()
+                return ['ok', 0]
             else:
                 cur.close()
-                return 'AUTH_FAILED'
+                return ['noauth', 1]
         else:
-            return 'VNC_EXISTS'
+            return ['exists', 1]
