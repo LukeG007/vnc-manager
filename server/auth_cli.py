@@ -56,7 +56,7 @@ class AuthenticationManagement:
         salt = os.urandom(32)
         hashed_passwd = self.get_hash(passwd, salt)
         hex_encoded = codecs.encode(salt+hashed_passwd, 'hex_codec')
-        cur.execute('INSERT INTO users VALUES(null, "{}", "{}", {})'.format(username, hashed_passwd, permissions))
+        cur.execute('INSERT INTO users VALUES(null, "{}", "{}", {})'.format(username, hex_encoded.decode('utf-8'), permissions))
         cur.close()
         self.db.commit()
         self.db.close()
