@@ -10,7 +10,9 @@ class VNCManagement:
         cur = self.db.cursor()
         cur.execute('CREATE TABLE IF NOT EXISTS vnc_servers(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, port INTEGER, server TEXT)')
         cur.close()
+        self.db.close()
     def start_vnc_server(self, port, username, passwd):
+        self.db = sqlite3.connect(self.db_name)
         authenticated = self.auth.auth(username, passwd)
         if not authenticated == False:
             permissions = authenticated
@@ -19,18 +21,23 @@ class VNCManagement:
                 cur.execute('SELECT * FROM vnc_servers WHERE port={}'.format(port))
             except sqlite3.Error:
                 cur.close()
+                self.db.close()
                 return ['notfound', 1]
             server_entry = cur.fetchall()[0]
             if not server_entry[1] == username and permissions == 0:
                 cur.close()
+                self.db.close()
                 return ['unprivileged', 1]
             cur.close()
+            self.db.close()
             self.client_sys.send_start_cmd(server_entry[3], username+':'+passwd, port)
             return ['ok', 0]
         else:
             cur.close()
+            self.db.close()
             return ['noauth', 1]
     def get_vnc_data(self):
+        self.db = sqlite3.connect(self.db_name)
         cur = self.db.cursor()
         cur.execute('SELECT username, port, server FROM vnc_servers')
         data = cur.fetchall()
@@ -40,10 +47,12 @@ class VNCManagement:
             entry_data['username'] = entry[0]
             entry_data['server'] = entry[2]
             vnc_data[entry[1]] = entry_data
-        
+        cur.close()
+        self.db.close()
         return vnc_data
 
     def create_vnc_server(self, username, passwd, port, server=None):
+        self.db = sqlite3.connect(self.db_name)
         cur = self.db.cursor()
         cur.execute('SELECT * FROM vnc_servers')
         vnc_servers = cur.fetchall()
@@ -69,9 +78,13 @@ class VNCManagement:
                 
                 cur.execute('INSERT INTO vnc_servers VALUES(null, "{}", "{}", "{}")'.format(username, port, server))
                 cur.close()
+                self.db.close()
                 return ['ok', 0]
             else:
                 cur.close()
+                self.db.close()
                 return ['noauth', 1]
         else:
+            cur.close()
+            self.db.close()
             return ['exists', 1]
