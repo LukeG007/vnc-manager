@@ -13,9 +13,19 @@ class CLISessionManagement:
         return self.cli.user_details([None, self.username])
     def create_vnc(self, args):
         port = args[1]
-        self.cli.vnc_sys.create_vnc_server(self.username, self.password, port)
+        resp = self.cli.vnc_sys.create_vnc_server(self.username, self.password, port)
+        if resp[1] == 1:
+            resp = 'ERROR: '+resp[0]
+        else:
+            resp = resp[0]
+        return resp
     def start_vnc(self, args):
         port = args[1]
-        self.vnc_sys.start_vnc_server(port, self.username, self.password)
+        resp = self.vnc_sys.start_vnc_server(port, self.username, self.password)
+        if resp[1] == 1:
+            resp = 'ERROR: '+resp[0]
+        else:
+            resp = resp[0]
+        return resp
     def execute(self, cmd):
         return self.cli.process_cmd(cmd, self.username, self.password)

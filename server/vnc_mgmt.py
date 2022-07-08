@@ -76,8 +76,9 @@ class VNCManagement:
                                 lowest_load_server = client
                     server = lowest_load_server
                 
-                cur.execute('INSERT INTO vnc_servers VALUES(null, "{}", "{}", "{}")'.format(username, port, server))
+                cur.execute('INSERT INTO vnc_servers VALUES(null, "{}", {}, "{}")'.format(username, port, server))
                 cur.close()
+                self.db.commit()
                 self.db.close()
                 return ['ok', 0]
             else:
