@@ -58,8 +58,8 @@ class VNCManagement:
         vnc_servers = cur.fetchall()
         vnc_exists = False
         for vnc in vnc_servers:
-            if vnc['username'] == username and vnc['port'] == port:
-                vnc_exists = True
+            if vnc[1] == username and vnc[2] == port:
+                    vnc_exists = True
         if not vnc_exists:
             authenticated = self.auth.auth(username, passwd)
             if not authenticated == False:
