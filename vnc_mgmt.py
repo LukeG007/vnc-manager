@@ -66,7 +66,7 @@ class VNCManagement:
                 if server is None:
                     server_load = {}
                     for client in self.client_sys.client_list:
-                        server_load[client['mgmt_id']] = client['vnc_server_amount']
+                        server_load[client] = self.client_sys.client_list[client]['vnc_server_amount']
                     lowest_load_server = None
                     for client in self.client_sys.client_list:
                         if lowest_load_server == None:
