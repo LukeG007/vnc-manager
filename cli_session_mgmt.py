@@ -8,6 +8,7 @@ class CLISessionManagement:
             'start_vnc': {'usage': 'start_vnc <port>', 'desc': 'Start vnc server', 'callback': self.start_vnc, 'permission_required': 1, 'expected_arg_amount': 2}
         })
         self.username = username
+        self.vnc_sys = vnc_sys
         self.password = password
     def whoami(self, args):
         return self.cli.user_details([None, self.username])
