@@ -30,6 +30,9 @@ class ClientManagement:
             mgmt_id = str(uuid.uuid4()).split('-')[0]
             self.client_list[mgmt_id] = {'hostname': hostname, 'ip': ip, 'vnc_server_amount': 0}
             cur.execute('INSERT INTO clients VALUES("{}", "{}", "{}", {})'.format(mgmt_id, hostname, ip, 0))
+            cur.close()
+            db.commit()
+            db.close()
         return 'ok'
     def send_start_cmd(self, mgmt_id, authentication, port):
         server = self.client_list[mgmt_id]
