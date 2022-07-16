@@ -1,17 +1,25 @@
 import cli_mgmt
 
 class CLISessionManagement:
-    def __init__(self, username, password, vnc_sys):
-        self.cli = cli_mgmt.CLI(vnc_sys, extra_cmds={
+    def __init__(self, username, password, vnc_sys, ste=None):
+        extra_cmds={
             'whoami': {'usage': 'whoami', 'desc': 'Check current user', 'callback': self.whoami, 'permission_required': 0, 'expected_arg_amount': 1},
             'create_vnc': {'usage': 'create_vnc <port>', 'desc': 'Create vnc server', 'callback': self.create_vnc, 'permission_required': 2, 'expected_arg_amount': 2},
             'start_vnc': {'usage': 'start_vnc <port>', 'desc': 'Start vnc server', 'callback': self.start_vnc, 'permission_required': 1, 'expected_arg_amount': 2}
-        })
+        }
+        if not ste == None:
+            extra_cmds['stop_cli'] = {'usage': 'stop_cli', 'desc': 'Stop the CLI server', 'callback': self.stop_cli, 'permission_required': 3, 'expected_arg_amount': 1}
+        self.cli = cli_mgmt.CLI(vnc_sys, extra_cmds=extra_cmds)
         self.username = username
         self.vnc_sys = vnc_sys
         self.password = password
+        self.ste = ste
     def whoami(self, args):
         return self.cli.user_details([None, self.username])
+    def stop_cli(self, args):
+        self.ste.conn.close()
+        self.ste.socket.close()
+        return 'ok'
     def create_vnc(self, args):
         port = args[1]
         resp = self.vnc_sys.create_vnc_server(self.username, self.password, port)
