@@ -84,8 +84,8 @@ def manage_cli_session(conn, ste):
 
 def start_cli_mgmt():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('0.0.0.0', 4582))
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind(('0.0.0.0', 4582))
     s.listen()
     while True:
         print('Listening for CLI connections')
