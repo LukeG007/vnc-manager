@@ -37,3 +37,6 @@ class ClientManagement:
     def send_start_cmd(self, mgmt_id, authentication, port):
         server = self.client_list[mgmt_id]
         requests.post('http://{}:4584/start'.format(server['ip']), data={'auth': authentication, 'port': port})
+    def send_stop_cmd(self, mgmt_id, authentication, port):
+        server = self.client_list[mgmt_id]
+        requests.post('http://{}:4584/start'.format(server['ip']), data={'auth': authentication, 'port': port})

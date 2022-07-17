@@ -32,6 +32,27 @@ class VNCManagement:
             self.db.close()
             self.client_sys.send_start_cmd(server_entry[3], username+':'+passwd, port)
             return ['ok', 0]
+    def stop_vnc_server(self, port, username, passwd):
+        self.db = sqlite3.connect(self.db_name)
+        authenticated = self.auth.auth(username, passwd)
+        if not authenticated == False:
+            permissions = authenticated
+            cur = self.db.cursor()
+            try:
+                cur.execute('SELECT * FROM vnc_servers WHERE port={}'.format(port))
+            except sqlite3.Error:
+                cur.close()
+                self.db.close()
+                return ['notfound', 1]
+            server_entry = cur.fetchall()[0]
+            if not server_entry[1] == username and permissions == 0:
+                cur.close()
+                self.db.close()
+                return ['unprivileged', 1]
+            cur.close()
+            self.db.close()
+            self.client_sys.send_stop_cmd(server_entry[3], username+':'+passwd, port)
+            return ['ok', 0]
         else:
             cur.close()
             self.db.close()
