@@ -110,3 +110,25 @@ class VNCManagement:
             cur.close()
             self.db.close()
             return ['exists', 1]
+    def delete_vnc_server(self, username, passwd, port):
+        auth = self.auth.auth(username, passwd)
+        if auth == 2:
+            self.db = sqlite3.connect(self.db_name)
+            cur = self.db.cursor()
+            entries = cur.execute('SELECT * FROM vnc_servers')
+            found = False
+            for entry in entries:
+                if entry[2] == port:
+                    found = True
+            if found:
+                cur.execute('DELETE FROM vnc_servers WHERE port={}'.format(port))
+                cur.close()
+                self.db.commit()
+                self.db.close()
+                return ['ok', 0]
+            else:
+                cur.close()
+                self.db.close()
+                return ['notfound', 1]
+        else:
+            return ['noauth', 1]
