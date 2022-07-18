@@ -62,7 +62,7 @@ def manage_cli_session(conn, ste):
                 conn.close()
                 run_cli = False
     if run_cli:
-        session = cli_session_mgmt.CLISessionManagement(authentication[0], authentication[1], vnc_sys, ste=ste)
+        session = cli_session_mgmt.CLISessionManagement(authentication[0], authentication[1], vnc_sys, client_sys, ste=ste)
         while True:
             try:
                 cmd = conn.recv(1024).decode('utf-8')
