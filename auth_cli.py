@@ -60,3 +60,10 @@ class AuthenticationManagement:
         cur.close()
         self.db.commit()
         self.db.close()
+    def delete_user(self, username):
+        self.db = sqlite3.connect(self.db_name)
+        cur = self.db.cursor()
+        cur.execute('DELETE FROM users WHERE username="{}"'.format(username))
+        cur.close()
+        self.db.commit()
+        self.db.close()

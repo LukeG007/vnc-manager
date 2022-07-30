@@ -10,6 +10,8 @@ class CLISessionManagement:
             'list_hosters': {'usage': 'list_hosters', 'desc': 'List all machines that host VNC servers', 'callback': self.list_hosters, 'permission_required': 0, 'expected_arg_amount': 1},
             'create_vnc': {'usage': 'create_vnc <port>', 'desc': 'Create vnc server', 'callback': self.create_vnc, 'permission_required': 2, 'expected_arg_amount': 2},
             'delete_vnc': {'usage': 'delete_vnc <port>', 'desc': 'Delete vnc server', 'callback': self.delete_vnc, 'permission_required': 2, 'expected_arg_amount': 2},
+            'create_user': {'usage': 'create_user <username> <password> <permission>', 'desc': 'Creates User', 'callback': self.create_user, 'permission_required': 2, 'expected_arg_amount': 4},
+            'delete_user': {'usage': 'delete_user <username>', 'desc': 'Deletes User', 'callback': self.delete_user, 'permission_required': 2, 'expected_arg_amount': 2},
             'start_vnc': {'usage': 'start_vnc <port>', 'desc': 'Start vnc server', 'callback': self.start_vnc, 'permission_required': 1, 'expected_arg_amount': 2},
             'stop_vnc': {'usage': 'stop_vnc <port>', 'desc': 'Stop vnc server', 'callback': self.stop_vnc, 'permission_required': 1, 'expected_arg_amount': 2},
         }
@@ -31,7 +33,16 @@ class CLISessionManagement:
         db.close()
         message = tabulate(data, headers=tab_headers)
         return message
-
+    def create_user(self, args):
+        author, author_permissions, user_found = self.cli.auth.get_user_details(self.username)
+        permissions = int(args[3])
+        if permissions <= author_permissions:
+            self.cli.auth.add_user(args[1], args[2], permissions)
+            return 'ok'
+        return 'noauth'
+    def delete_user(self, args):
+        self.cli.auth.delete_user(args[1])
+        return 'ok'
     def list_hosters(self, args):
         tab_headers = ['Hostname', 'IP', 'MGMT ID', 'Load', 'Online']
         db = sqlite3.connect(self.client_sys.db)
