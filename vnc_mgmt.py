@@ -30,8 +30,12 @@ class VNCManagement:
                 return ['unprivileged', 1]
             cur.close()
             self.db.close()
-            self.client_sys.send_start_cmd(server_entry[3], username+':'+passwd, port)
-            return ['ok', 0]
+            resp = self.client_sys.send_start_cmd(server_entry[3], username+':'+passwd, port)
+            if not resp == 'ok':
+                error = 1
+            else:
+                error = 0
+            return [resp, error]
     def stop_vnc_server(self, port, username, passwd):
         self.db = sqlite3.connect(self.db_name)
         authenticated = self.auth.auth(username, passwd)
@@ -51,8 +55,12 @@ class VNCManagement:
                 return ['unprivileged', 1]
             cur.close()
             self.db.close()
-            self.client_sys.send_stop_cmd(server_entry[3], username+':'+passwd, port)
-            return ['ok', 0]
+            resp = self.client_sys.send_stop_cmd(server_entry[3], username+':'+passwd, port)
+            if not resp == 'ok':
+                error = 1
+            else:
+                error = 0
+            return [resp, error]
         else:
             cur.close()
             self.db.close()
