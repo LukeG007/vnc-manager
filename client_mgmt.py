@@ -35,7 +35,7 @@ class ClientManagement:
             db.commit()
             db.close()
         return 'ok'
-    def ping_hosters():
+    def ping_hosters(self):
         db = sqlite3.connect(self.db)
         cur = db.cursor()
         cur.execute('SELECT mgmt_id, ip FROM clients')
