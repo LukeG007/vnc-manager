@@ -44,6 +44,7 @@ class CLISessionManagement:
         self.cli.auth.delete_user(args[1])
         return 'ok'
     def list_hosters(self, args):
+        self.client_sys.ping_hosters()
         tab_headers = ['Hostname', 'IP', 'MGMT ID', 'Load', 'Online']
         db = sqlite3.connect(self.client_sys.db)
         cur = db.cursor()
