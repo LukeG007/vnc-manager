@@ -43,8 +43,11 @@ class VNCManagement:
             permissions = authenticated
             cur = self.db.cursor()
             cur.execute('SELECT * FROM vnc_servers WHERE port={}'.format(port))
-            server_entry = cur.fetchall()
-            if server_entry == []:
+            try:
+                server_entry = cur.fetchall()[0]
+            except IndexError:
+                cur.close()
+                self.db.close()
                 return ['notfound', 1]
             if not server_entry[1] == username and permissions == 0:
                 cur.close()
