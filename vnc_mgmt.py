@@ -42,13 +42,10 @@ class VNCManagement:
         if not authenticated == False:
             permissions = authenticated
             cur = self.db.cursor()
-            try:
-                cur.execute('SELECT * FROM vnc_servers WHERE port={}'.format(port))
-            except sqlite3.Error:
-                cur.close()
-                self.db.close()
+            cur.execute('SELECT * FROM vnc_servers WHERE port={}'.format(port))
+            server_entry = cur.fetchall()
+            if server_entry == []:
                 return ['notfound', 1]
-            server_entry = cur.fetchall()[0]
             if not server_entry[1] == username and permissions == 0:
                 cur.close()
                 self.db.close()
