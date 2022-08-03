@@ -64,3 +64,9 @@ class ClientManagement:
         server = self.client_list[mgmt_id]
         requests.post('http://{}:4584/stop'.format(server['ip']), data={'auth': authentication, 'port': port})
         return 'ok'
+    def send_create_cmd(self, mgmt_id, authentication, port):
+        self.ping_hosters()
+        if not mgmt_id in self.client_list:
+            return 'hoster offline'
+        server = self.client_list[mgmt_id]
+        requests.post('http://{}:4584/create'.format(server['ip']), data={'auth': authentication, 'port': port})
