@@ -104,12 +104,15 @@ class VNCManagement:
                             if self.client_sys.client_list[lowest_load_server['vnc_server_amount']] > self.client_sys.client_list[client['vnc_server_amount']]:
                                 lowest_load_server = client
                     server = lowest_load_server
-                
                 cur.execute('INSERT INTO vnc_servers VALUES(null, "{}", {}, "{}")'.format(username, port, server))
                 cur.close()
                 self.db.commit()
                 self.db.close()
-                return ['ok', 0]
+                resp = self.client_sys.send_create_cmd(server, username+':'+passwd, port)
+                error = 0
+                if not resp == 'ok':
+                    error = 1
+                return [resp, error]
             else:
                 cur.close()
                 self.db.close()
