@@ -70,3 +70,4 @@ class ClientManagement:
             return 'hoster offline'
         server = self.client_list[mgmt_id]
         requests.post('http://{}:4584/create'.format(server['ip']), data={'auth': authentication, 'port': port})
+        return 'ok'
