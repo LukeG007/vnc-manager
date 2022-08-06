@@ -5,3 +5,6 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=/mgmt-server/server.py
+
+[Install]
+WantedBy=multi-user.target
