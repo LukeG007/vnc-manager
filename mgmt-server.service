@@ -1,0 +1,7 @@
+[Unit]
+Description=VNC Management Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/mgmt-server/server.py
