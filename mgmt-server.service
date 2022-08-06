@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/mgmt-server/server.py
+WorkingDirectory=/mgmt-server
+ExecStart=python3 server.py
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.targe
